@@ -19,6 +19,54 @@ type novelRepo struct {
 	rdb *redis.Client
 }
 
+// Get All novel
+
+func (n *novelRepo) GetAllNovel() ([]model.Novel, error) {
+	var novels []model.Novel
+	var c = context.Background()
+
+	// Check available Redis
+
+	result,err := n.rdb.Get(c, "getAllNovel").Result()
+
+	if err != nil && err != redis.Nil {
+		return novels, err
+	}
+
+	// If data available in redis, decode it from json and return it
+
+	if len(result) > 0 {
+		fmt.Printf("data get from redis")
+
+		err := json.Unmarshal([]byte(result), &novels)
+		return novels, err
+	}
+
+	// if data not available in redis, get it from database
+	err = n.db.Model(&novels).Select("id", "name", "description", "author").Find(&novels).Error
+	if err != nil {
+		return novels, err
+	}
+
+	// Encode that slice into json before saving json
+	jsonBytes, err := json.Marshal(novels)
+
+	if err != nil {
+		return novels, err
+	}
+
+	jsonString := string(jsonBytes)
+
+	err = n.rdb.Set(c, "getAllNovel", jsonString, 24*time.Hour).Err()
+	if err != nil {
+		return novels, err
+	}
+
+	fmt.Println("save redis")
+
+	return novels, nil
+}
+
 // GetNovelById Implements domain.novelRepo
 func (n *novelRepo) GetNovelById(id int) (model.Novel, error) {
 	var novels model.Novel

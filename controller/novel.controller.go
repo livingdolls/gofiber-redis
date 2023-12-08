@@ -71,3 +71,20 @@ func (n *NovelController) GetNovelById(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(res)
 }
+
+func (n *NovelController) GetAllNovel(c *fiber.Ctx) error {
+	var response model.Response
+
+	novel, err := n.novelUseCase.GetAllNovel()
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message" : err.Error(),
+		})
+	}
+
+	response = model.Response{StatusCode: http.StatusOK, Message: "Get all novel success", Data: novel}
+
+	return c.Status(http.StatusOK).JSON(response)
+
+}

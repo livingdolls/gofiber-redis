@@ -10,6 +10,17 @@ type novelUseCase struct {
 	novelRepo domain.NovelRepo
 }
 
+// GetAllNovel implements domain.NovelUseCase.
+func (n *novelUseCase) GetAllNovel() ([]model.Novel, error) {
+	res, err := n.novelRepo.GetAllNovel()
+
+	if err != nil {
+		return []model.Novel{}, errors.New("internal server error : " + err.Error())
+	}
+
+	return res, nil
+}
+
 // GetNovelById implements domain.NovelUseCase.
 func (n *novelUseCase) GetNovelById(id int) (model.Novel, error) {
 	res, err := n.novelRepo.GetNovelById(id)
