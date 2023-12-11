@@ -10,6 +10,17 @@ type novelUseCase struct {
 	novelRepo domain.NovelRepo
 }
 
+// DeleteNovel implements domain.NovelUseCase.
+func (n *novelUseCase) DeleteNovel(id int) (model.Novel, error) {
+	res, err := n.novelRepo.DeleteNovel(id)
+
+	if err != nil {
+		return model.Novel{}, errors.New("internal server error : " + err.Error())
+	}
+
+	return res, nil	
+}
+
 // GetAllNovel implements domain.NovelUseCase.
 func (n *novelUseCase) GetAllNovel() ([]model.Novel, error) {
 	res, err := n.novelRepo.GetAllNovel()
