@@ -129,6 +129,7 @@ func (n *novelRepo) DeleteNovel(id int) (model.Novel, error) {
 	var novels model.Novel
 	var c = context.Background();
 
+
 	// Check available redis;
 
 	result, err := n.rdb.Get(c, "novel"+strconv.Itoa(id)).Result();
@@ -143,13 +144,25 @@ func (n *novelRepo) DeleteNovel(id int) (model.Novel, error) {
 		// Delete from redis
 		_, err := n.rdb.Del(c, "novel"+strconv.Itoa(id)).Result()
 		if err != nil {
-			fmt.Println("Delete Gagal")
+			
 		}
 
 		fmt.Println("Delete Ok")
 	}
 
-	// TODO : DELETE FROM DATABASE
+	err = n.db.Model(model.Novel{}).Where("id = ?", id).Find(&novels).Error;
+
+	if err != nil {
+		return novels, err
+	}
+
+	// Delete
+
+	errDelete := n.db.Delete(&novels).Error
+
+	if errDelete != nil {
+		return novels, err
+	}
 
 	return novels, err
 }

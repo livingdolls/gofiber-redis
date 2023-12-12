@@ -65,7 +65,7 @@ func (n *NovelController) GetNovelById(c *fiber.Ctx) error {
 	if novel.Name != "" {
 		res = model.Response{StatusCode: http.StatusOK, Message: "Get Novel Success", Data: novel}
 	} else {
-		res = model.Response{StatusCode: http.StatusOK, Message: "Get Novel Success (null)"}
+		res = model.Response{StatusCode: http.StatusNotFound, Message: "Get Novel Success (null)"}
 
 	}
 
