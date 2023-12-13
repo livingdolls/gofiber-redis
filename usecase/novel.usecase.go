@@ -45,7 +45,13 @@ func (n *novelUseCase) GetNovelById(id int) (model.Novel, error) {
 
 func (n *novelUseCase) CreateNovel(createNovel model.Novel) error {
 	err := n.novelRepo.CreateNovel(createNovel)
-	return errors.New("Internal server error : " + err.Error())
+
+	if err != nil {
+		return errors.New("Internal server error : " + err.Error())
+	}
+	
+
+	return nil
 }
 
 func NewNovelUseCase(novelRepo domain.NovelRepo) domain.NovelUseCase {

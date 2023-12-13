@@ -150,7 +150,7 @@ func (n *novelRepo) DeleteNovel(id int) (model.Novel, error) {
 		fmt.Println("Delete Ok")
 	}
 
-	err = n.db.Model(model.Novel{}).Where("id = ?", id).Find(&novels).Error;
+	err = n.db.Model(model.Novel{}).Select("id", "name", "description", "author").Where("id = ?", id).Find(&novels).Error;
 
 	if err != nil {
 		return novels, err

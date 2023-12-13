@@ -39,6 +39,7 @@ func (n *NovelController) CreateNovel(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
+
 	response = model.Response{StatusCode: http.StatusOK, Message: "Insert successfull"}
 	return c.Status(http.StatusOK).JSON(response)
 }
@@ -107,6 +108,7 @@ func (n *NovelController) DeleteNovel(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"data" : novel,
+		"statusCode": 200,
+		"message" : "Hapus "+novel.Name+" Berhasil",
 	})
 }
