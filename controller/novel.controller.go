@@ -39,6 +39,7 @@ func (n *NovelController) CreateNovel(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
+
 	response = model.Response{StatusCode: http.StatusOK, Message: "Insert successfull"}
 	return c.Status(http.StatusOK).JSON(response)
 }
@@ -65,7 +66,7 @@ func (n *NovelController) GetNovelById(c *fiber.Ctx) error {
 	if novel.Name != "" {
 		res = model.Response{StatusCode: http.StatusOK, Message: "Get Novel Success", Data: novel}
 	} else {
-		res = model.Response{StatusCode: http.StatusOK, Message: "Get Novel Success (null)"}
+		res = model.Response{StatusCode: http.StatusNotFound, Message: "Get Novel Success (null)"}
 
 	}
 
@@ -87,4 +88,27 @@ func (n *NovelController) GetAllNovel(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(response)
 
+}
+
+func (n *NovelController) DeleteNovel(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message" : "invalid id",
+		})
+	}
+
+	novel, err := n.novelUseCase.DeleteNovel(idInt)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message" : err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"statusCode": 200,
+		"message" : "Hapus "+novel.Name+" Berhasil",
+	})
 }
